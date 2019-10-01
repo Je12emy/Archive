@@ -4,7 +4,7 @@ This is a simple Web app which pulls data from the [DarkSky API](https://darksky
 Here are some topics which you can learn if you follow the youtube tutorial or study this code.
   - Arrow Functions.
   - DOM manipulation.
-  - Pull data from an API asyncrnouslly.
+  - Pull data from an API.
   - Use ChartJS to display dynamic data.
 
 # Preview
