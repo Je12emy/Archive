@@ -1,0 +1,68 @@
+*{
+    margin: 0;
+    padding:0;
+    box-sizing: border-box;
+}
+body{
+    background: lightblue;
+    text-align: center;
+    height: 100vh;
+    margin:0;
+    /*font-family: 'Open Sans', sans-serif;*/
+    font-family: 'Indie Flower', cursive;
+}
+.app{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /*? https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content */
+    justify-content: space-between;
+    align-items: center;
+}
+.list{
+    margin: 20px 20px 20px 20px;
+    width: 80%;
+    background: white;
+    align-items: center;
+}
+.list h1 {
+    text-transform: uppercase;
+    font-weight: 600;
+    border-bottom: 2px solid black;
+}
+.todo-list{
+    list-style: none;
+}
+.list-row{
+    vertical-align: middle;
+    border-bottom: 1.4px dashed lightblue;
+}
+.todo-item{
+    cursor: pointer;
+    text-align: left;
+    margin:5px 5px 5px 30px;
+    text-decoration: none;
+}
+.removeButton{
+    float: right;
+    margin: 0px 5px 0px 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.5;
+}
+.removeButton:hover {
+    opacity: 1;
+}
+.list-input{
+    font-family: 'Indie Flower', cursive;
+    text-align: left;
+    border:none;
+    margin:5px 5px 5px 0px;
+    padding:5px 0px 0px 5px;
+    width: 95%;
+}
+textarea:focus, input:focus{
+    outline: none;
+}
+
