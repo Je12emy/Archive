@@ -56,6 +56,21 @@ app.get('/weather', (req,res) => {
     });
 })
 
+//* 404 Route for help
+app.get('/help/*', (req, res) => {
+        res.render('404',{
+            errorMessage:'Help Article not found!'
+        })
+});
+
+//* Route for 404
+app.get('*', (req, res) => {
+    res.render('404', {
+        errorMessage:'404 Page not found'
+    })
+});
+
+
 //! Server config
 //* Now we need to start a server up, we listen for a port
 app.listen(3000, () => {
