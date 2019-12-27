@@ -8,7 +8,7 @@ const forecast = document.querySelector('#forecast')
 //? The fetch API is a browser api not accesible to Node, here we provide a URL and with .then we have access to the response
 let GetWeather = (address) => {
     
-    const URL = `http://localhost:3000/weather?address=${address}`
+    const URL = `/weather?address=${address}`
     fetch(URL)
     .then(response => {
         //? Reads the body and parses it into json: https://developer.mozilla.org/en-US/docs/Web/API/Body/json
