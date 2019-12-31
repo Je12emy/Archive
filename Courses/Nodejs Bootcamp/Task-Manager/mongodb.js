@@ -18,44 +18,42 @@ MongoClient.connect(connectionURL, {useNewUrlParser: true, useUnifiedTopology: t
     }
     //? Create the dababase
     const db = client.db(dataBase)
-    
-    //? Access the collection of users and findOne
-    //? In the object we pass the criteria
-    //? In the callback we have the error and accesed document
 
-    // db.collection('users').findOne({_id: new ObjectID('5e093dbdc830901de8e6ec7e')}, (error, user) => {
-    //     if (error) {
-    //         return console.log('Unable to fetch');
+    // //? Access the collection and invoke the updateOne method
+    // const updatePromise = db.collection('users').updateOne({
+    //     //? Pass in the filter
+    //     _id: new ObjectID('5e094cba4607583c101080ec')
+    // },{
+    //     //? Pass in the Update Operator
+    //     $inc: {
+    //         //? Increment the field by 1
+    //         age: 1
     //     }
-    //     console.log(user); 
     // })
     
-    //* Find: http://mongodb.github.io/node-mongodb-native/3.4/api/Collection.html#find
-    //? With find we are given a cursor and NOT  a callback
-    //? a cursor points towards the matches in the db
-    //? this allows for many options instead of just returning a callback with a array
-    //* Cursor: http://mongodb.github.io/node-mongodb-native/3.4/api/Cursor.html
-
-    // db.collection('users').find({age:21}).count((error, count) => {
-    //     //* Turn this cursor into a array, the array does take the callback
-    //     if (error) {
-    //         return console.log('Error fetching users');   
-    //     }
-    //     console.log(count);
+    // //? Fullfill the promise
+    // updatePromise.then((user) => {
+    //     console.log('User updated: ',user);
+    // }).catch((error) => {
+    //     console.log('Error:',error);
     // })
-    
-    db.collection('tasks').find({_id: new ObjectID('5e0945915bbbd737d71b1d9a')}).toArray((error, task) => {
-        if (error) {
-            return console.log('Unable to fetch Task');
-        }
-        console.log(task);
-    })
 
-    db.collection('tasks').find({completed: false}).toArray((error, tasks) => {
-        if (error) {
-            return console.log('Unable to fetch uncompleted tasks');
-        }
-        console.log(tasks);
+    // db.collection('users').deleteMany({
+    //     age: 20
+    // }).then(user => {
+    //     console.log('Deleted user:', user);
+        
+    // }).catch(error => {
+    //     console.log('Error:', error);
+    // })
+
+    db.collection('tasks').deleteOne({
+        description: 'Buy milk'
+    }).then(task => {
+        console.log('Items deleted', task.deletedCount);
+        
+    }).catch(error => {
+        console.log('Error:', error);
         
     })
 

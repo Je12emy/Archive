@@ -45,4 +45,16 @@
 //     console.log(result)
 // });
 
-
+//! Basic Callback pattern
+const doWorkCallback = (callback) => {
+    setTimeout(() => {
+        //callback('This is a error message', undefined)
+        callback(undefined, 'Two secconds have passed')
+    },2000)
+}
+doWorkCallback((error, result) => {
+    if (error) {
+        return error
+    }
+    console.log(result); 
+})
