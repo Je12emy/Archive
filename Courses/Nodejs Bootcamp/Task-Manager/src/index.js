@@ -138,6 +138,53 @@ app.get('/tasks/:id', async (req, res) => {
     // })
 })
 
+//? Update user
+app.patch('/users/:id', async (req, res) => {
+    //? Ensure the user is not passing invalid update properties
+    //* Get all the key values in the req.body
+    const updates = Object.keys(req.body)
+    //* Array with the allowed fields to be updated
+    const allowedUpdates = ['name', 'email', 'password', 'age']
+    //? "Every" returns true if all the items return true
+    const isValidOperation = updates.every(update => allowedUpdates.includes(update))
+    
+    if (!isValidOperation) {
+        return res.status(400).send({error: "Invalid update property"})
+    }
+    try {    
+        const _id = req.params.id        
+        const user = await User.findByIdAndUpdate(_id, req.body, { new: true, runValidators: true })
+        //? If the ID does not exist    
+        if (!user) {
+            return res.status(404).send()
+        }
+        res.send(user)
+
+    } catch (error) {
+        res.status(400).send()
+    }
+})
+
+//? Update Task
+app.patch('/tasks/:id', async (req, res) => {
+    const allowedUpdates = ['description', 'completed']
+    const updates = Object.keys(req.body)
+    const isValidOperation = updates.every(update => allowedUpdates.includes(update))
+    if (!isValidOperation) {
+        return res.status(400).send()
+    }
+    try {
+        const _id = req.params.id
+        const task = await Task.findByIdAndUpdate(_id, req.body, { new:true, runValidators: true})
+        if (!task) {
+            return res.status(404).send()
+        }
+        res.send(task)
+    } catch (error) {
+        res.status(400).send()
+    }
+})
+
 app.listen(PORT, () => {
     console.log('Server is up on port: ', PORT);
 })
