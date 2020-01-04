@@ -88,8 +88,18 @@ router.patch('/users/:id', async (req, res) => {
         return res.status(400).send({error: "Invalid update property"})
     }
     try {    
-        const _id = req.params.id        
-        const user = await User.findByIdAndUpdate(_id, req.body, { new: true, runValidators: true })
+        const _id = req.params.id     
+
+        //? Update for hashing
+        //* Find the user
+        const user = await User.findById(_id)
+        //? Since there no guarantee properties will be the same allways
+        //? We need the properties to be updated dynamiclly
+        //* Access the properties using the update array to assign the new value for the key values
+        updates.forEach(update => user[update] = req.body[update] )
+        await user.save()
+        //const user = await User.findByIdAndUpdate(_id, req.body, { new: true, runValidators: true })
+
         //? If the ID does not exist    
         if (!user) {
             return res.status(404).send()
