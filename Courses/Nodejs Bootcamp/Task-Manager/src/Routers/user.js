@@ -1,10 +1,9 @@
 const express = require('express')
 const User = require('../models/user')
-//? Create a router
+const auth = require('../middleware/auth')
 const router = express.Router()
 
 //! User Routes
-
 //? User login 
 router.post('/users/login', async (req, res) => {
     try {      
@@ -17,7 +16,7 @@ router.post('/users/login', async (req, res) => {
 })
 
 //? Create user
-router.post('/users', async (req, res) => {
+router.post('/users',async (req, res) => {
     //? Create a new user
     const user = new User(req.body)
 
@@ -40,22 +39,8 @@ router.post('/users', async (req, res) => {
 })
 
 //? Fetch all users
-router.get('/users', async (req,res)=> {
-    try {
-        const users = await User.find({})
-        res.send(users)
-    } catch (error) {
-        res.status(500).send()
-    }
-    
-    
-    
-    // //? Fetch all users
-    // User.find({}).then(users => {
-    //     res.status(200).send(users)
-    // }).catch(error => {
-    //     res.status(500).send()
-    // })
+router.get('/users/me', auth, async (req,res)=> {
+    res.send(req.user)
 })
 
 //? Fetch a single user

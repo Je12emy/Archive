@@ -4,19 +4,18 @@ require('./db/mongoose')
 
 const userRouter = require('./Routers/user')
 const taskRouter = require('./Routers/task')
+const auth = require('./middleware/auth')
 
 const app = express()
 const PORT = process.env.PORT || 3000
 
-app.use((req, res, next) => {
-    if (req.method) {
-        res.status(500).send('Server is under maintenance')
-    }else{
-        next()
-    }
-})
-
-
+// app.use((req, res, next) => {
+//     if (req.method) {
+//         res.status(503).send('Server is under maintenance')
+//     }else{
+//         next()
+//     }
+// })
 
 // app.use((req, res, next) => {
 //     if (req.method === "GET") {
