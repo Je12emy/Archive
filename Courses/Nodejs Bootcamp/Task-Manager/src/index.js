@@ -40,16 +40,12 @@ app.listen(PORT, () => {
     console.log('Server is up on port: ', PORT);
 })
 
-//! Import jwt
-const jwt = require('jsonwebtoken')
-
-const myFunction = async () => {
-    //? Use jwt.sign({object: identifier for user},'secret password for token') to create a token
-    const token = jwt.sign({_id: 'asd123'},'thisismynewcourse', {expiresIn:'5 seconds'})
-    console.log(token);
-
-    const data = jwt.verify(token, 'thisismynewcourse')
-    console.log(data);
-    
+const pet = {
+    name: 'Luka'
 }
-myFunction()
+pet.toJSON = function (){
+    console.log(this); //? { name: 'Luka', toJSON: [Function (anonymous)] }
+    return {}
+}
+console.log(JSON.stringify(pet)); //? {}
+

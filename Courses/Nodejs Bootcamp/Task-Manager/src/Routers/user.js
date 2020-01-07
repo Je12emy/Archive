@@ -9,7 +9,9 @@ router.post('/users/login', async (req, res) => {
     try {      
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
-        res.send({user, token})
+        //* Send back the public profile data
+        res.send({ user, token})
+        
     } catch (error) {
         res.status(400).send(error)
     }
@@ -41,6 +43,35 @@ router.post('/users',async (req, res) => {
 //? Fetch all users
 router.get('/users/me', auth, async (req,res)=> {
     res.send(req.user)
+})
+
+//? Logout of current sesion
+router.post('/users/logout', auth, async(req, res) => {
+    try {
+        //? Filter out the current token out of the array
+        req.user.tokens = req.user.tokens.filter(token => {
+            //* New array where all tokens are not in the header
+            return token.token != req.token
+        })
+        //* Save the new user model with the updated tokens array
+        await req.user.save()
+        res.send()
+    } catch (error) {
+        res.status(500).send()
+    }
+})
+
+//? Logout of all sesions
+router.post('/users/logoutAll', auth, async(req, res) => {
+    try {
+        //! Delete the whole tokens array
+        req.user.tokens = []
+        //? Update the collection
+        await req.user.save()
+        res.send()
+    } catch (error) {
+        res.status(500).send()
+    }
 })
 
 //? Fetch a single user

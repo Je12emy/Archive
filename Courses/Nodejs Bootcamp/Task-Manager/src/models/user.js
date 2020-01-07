@@ -70,7 +70,18 @@ userSchema.methods.generateAuthToken = async function(){
     user.tokens = user.tokens.concat({token})
     await user.save()
     return token
+}
+userSchema.methods.toJSON = function(){
+    const user = this
+    //? Parse the document into a JS Object
+    const userObject = user.toObject()
+    
+    //! Delete the properties
+    delete userObject.password
+    delete userObject.tokens
 
+    //* Return the object
+    return userObject
 }
 
 //! Hash the plain text password
