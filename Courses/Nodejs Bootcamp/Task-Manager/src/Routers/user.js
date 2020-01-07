@@ -27,7 +27,8 @@ router.post('/users',async (req, res) => {
     try{
         //! If this await promise is fullfilled the response will be sent
         await user.save()
-        const token = user.generateAuthToken()
+        const token = await user.generateAuthToken()
+        
         res.status(201).send({user, token})
     }catch (e){
         return res.status(400).send(e)
@@ -74,36 +75,8 @@ router.post('/users/logoutAll', auth, async(req, res) => {
     }
 })
 
-//? Fetch a single user
-router.get('/users/:id', async (req,res) => {
-    const _id = req.params.id
-    try {
-        const user = await User.findById(_id)
-        if (!user) {
-            return res.status(404).send()
-        }
-        res.send(user)
-    } catch (error) {
-        res.status(500).send()
-    }
-    
-    // const _id = req.params.id
-    // console.log(_id);
-    // //! Mongoose turns the id string into ObjectId, this means it need to be atlast 12 characters
-    // //! or else it will throw a 500 error
-    // User.findById(_id).then(user => {
-    //     //? If no user is found return a 404
-    //     if (!user) {
-    //         return res.status(404).send()
-    //     }
-    //     res.send(user)
-    // }).catch(error => {
-    //     res.status(500).send(error)
-    // })
-})
-
 //? Update user
-router.patch('/users/:id', async (req, res) => {
+router.patch('/users/me', auth, async (req, res) => {
     //? Ensure the user is not passing invalid update properties
     //* Get all the key values in the req.body
     const updates = Object.keys(req.body)
@@ -116,22 +89,15 @@ router.patch('/users/:id', async (req, res) => {
         return res.status(400).send({error: "Invalid update property"})
     }
     try {    
-        const _id = req.params.id     
-
         //? Update for hashing
-        //* Find the user
-        const user = await User.findById(_id)
+        //* Use the logged in user
+        const user = req.user
         //? Since there no guarantee properties will be the same allways
         //? We need the properties to be updated dynamiclly
         //* Access the properties using the update array to assign the new value for the key values
         updates.forEach(update => user[update] = req.body[update] )
         await user.save()
-        //const user = await User.findByIdAndUpdate(_id, req.body, { new: true, runValidators: true })
 
-        //? If the ID does not exist    
-        if (!user) {
-            return res.status(404).send()
-        }
         res.send(user)
 
     } catch (error) {
@@ -140,14 +106,19 @@ router.patch('/users/:id', async (req, res) => {
 })
 
 //? Deleting users
-router.delete('/users/:id',async (req, res) => {
+router.delete('/users/me', auth,async (req, res) => {
     try {
-        const _id = req.params.id
-        const user = await User.findByIdAndDelete(_id)
-        if (!user) {
-            return res.status(404).send()
-        }
-        res.send(user)
+        //* Updated to use the logged user info
+        //? New
+        await req.user.remove()
+        
+        //? Old with authentication
+        //const user = await User.findByIdAndDelete(req.user._id)
+        // if (!user) {
+        //     return res.status(404).send()
+        // }
+
+        res.send(req.user)
 
     } catch (error) {
         res.status(500).send()

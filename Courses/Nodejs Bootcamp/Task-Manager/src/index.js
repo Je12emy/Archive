@@ -40,12 +40,12 @@ app.listen(PORT, () => {
     console.log('Server is up on port: ', PORT);
 })
 
-const pet = {
-    name: 'Luka'
-}
-pet.toJSON = function (){
-    console.log(this); //? { name: 'Luka', toJSON: [Function (anonymous)] }
-    return {}
-}
-console.log(JSON.stringify(pet)); //? {}
+// const pet = {
+//     name: 'Luka'
+// }
+// pet.toJSON = function (){
+//     console.log(this); //? { name: 'Luka', toJSON: [Function (anonymous)] }
+//     return {}
+// }
+// console.log(JSON.stringify(pet)); //? {}
 
