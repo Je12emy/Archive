@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -39,7 +40,13 @@ const userSchema = new mongoose.Schema({
                 throw new Error('Your password cannot be "password"')
             }
         }
-    }
+    },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 })
 //? Create a custom method for this model
 userSchema.statics.findByCredentials = async (email, password) => { 
@@ -53,6 +60,17 @@ userSchema.statics.findByCredentials = async (email, password) => {
         throw new Error('Unable to login')
     }
     return user
+}
+//? Web token creation
+userSchema.methods.generateAuthToken = async function(){
+    const user = this
+    //? Remember user._id is of type ObjectId and not a string which is why we convert it
+    const token = jwt.sign({_id:user._id.toString()}, 'secretPassword')
+    //? Add the token into the tokens array
+    user.tokens = user.tokens.concat({token})
+    await user.save()
+    return token
+
 }
 
 //! Hash the plain text password

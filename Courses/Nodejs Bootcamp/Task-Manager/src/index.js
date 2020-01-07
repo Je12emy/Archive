@@ -8,12 +8,34 @@ const taskRouter = require('./Routers/task')
 const app = express()
 const PORT = process.env.PORT || 3000
 
+app.use((req, res, next) => {
+    if (req.method) {
+        res.status(500).send('Server is under maintenance')
+    }else{
+        next()
+    }
+})
+
+
+
+// app.use((req, res, next) => {
+//     if (req.method === "GET") {
+//         console.log('You cant use this operation')
+//         res.send('GET requests are disabled')    
+//     } else {
+//     console.log(req.method, req.path);
+//     //! Finish middleware function
+//     next()
+//     }
+// })
+
 //! Parse JSON in a object
 app.use(express.json())
 
 //! Routers
 app.use(userRouter)
 app.use(taskRouter)
+
 
 app.listen(PORT, () => {
     console.log('Server is up on port: ', PORT);
