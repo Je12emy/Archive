@@ -9,23 +9,36 @@ const auth = require('../middleware/auth')
 //! Task Routes
 //? Fetch all tasks
 //* GET/task?completed=false/true
-//* GET/tasls?limit=#?skip=#
+//* GET/tasks?limit=#?skip=#
+//* Get/tasks?sortBy=createdAd_asc/desc
 router.get('/tasks', auth, async (req, res) => {
     try {
         //const tasks = await Task.find({owner:req.user._id})
         //res.send(tasks)
+        //? Options objects
         const match = {}
+        const sort = {}
+
         if (req.query.completed) {
             //? Convert the string into a boolean by comparing the param with the string true
             match.completed = req.query.completed === 'true'
         }
+
+        if (req.query.sortBy) {            
+            //? Split query at special character
+            const parts =  req.query.sortBy.split(':')    
+            //? Turnary operator
+            sort[parts[0]] = parts[1] === 'desc' ? -1 : 1                  
+        }
+        
         
         const user = await req.user.populate({
             path: 'tasks',
             match,
             options: {
                 limit: parseInt(req.query.limit),
-                skip: parseInt(req.query.skip)
+                skip: parseInt(req.query.skip),
+                sort
             }
         }).execPopulate()
         res.send(user.tasks)  
