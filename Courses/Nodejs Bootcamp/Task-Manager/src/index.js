@@ -40,12 +40,17 @@ app.listen(PORT, () => {
     console.log('Server is up on port: ', PORT);
 })
 
-// const pet = {
-//     name: 'Luka'
-// }
-// pet.toJSON = function (){
-//     console.log(this); //? { name: 'Luka', toJSON: [Function (anonymous)] }
-//     return {}
-// }
-// console.log(JSON.stringify(pet)); //? {}
+const Task = require('./models/task')
+const User = require('./models/user')
 
+const main = async() => {
+    // const task = await Task.findById('5e15772cd7a3b411db450dc7')
+    // //? Populate the property with the relationship from User
+    // await task.populate('owner').execPopulate()
+    // console.log(task.owner); //? User information is displayed
+    
+    const user = await User.findById('5e1576030e022b0fdaab3897')
+    await user.populate('tasks').execPopulate()
+    console.log(user.tasks);
+}
+main()

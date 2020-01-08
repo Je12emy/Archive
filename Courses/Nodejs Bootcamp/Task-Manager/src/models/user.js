@@ -48,6 +48,14 @@ const userSchema = new mongoose.Schema({
         }
     }]
 })
+
+//! Virtual property, this is a relationship between the two entities
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 //? Create a custom method for this model
 userSchema.statics.findByCredentials = async (email, password) => { 
     const user = await User.findOne({email})

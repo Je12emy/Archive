@@ -4,6 +4,8 @@ const Task = require('../models/task')
 //? Create the router
 const router = express.Router()
 
+const auth = require('../middleware/auth')
+
 //! Task Routes
 //? Fetch all tasks
 router.get('/tasks', async (req, res) => {
@@ -22,21 +24,19 @@ router.get('/tasks', async (req, res) => {
     // })
 })
 
-router.post('/tasks', async (req, res)=>{
-    const task = new Task(req.body)
+router.post('/tasks', auth, async (req, res)=>{
+    // const task = new Task(req.body)
+    //? Rest param
+    const task = new Task({
+        ...req.body, 
+        owner: req.user._id
+    })
     try {
         await task.save()
         res.status(201).send(task)
     } catch (error) {
         res.status(400).send()
     }
-
-    // const task = new Task(req.body)
-    // task.save().then(task => {
-    //     res.status(201).send(task)
-    // }).catch(error => {
-    //     res.status(400).send(error)
-    // })
 })
 
 //? Fetch task by id
