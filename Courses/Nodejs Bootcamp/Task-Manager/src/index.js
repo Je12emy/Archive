@@ -13,7 +13,19 @@ const PORT = process.env.PORT || 3000
 const multer = require('multer')
 //? Multer config, destination folder is set
 const upload = multer({
-    dest: 'avatars'
+    dest: 'avatars',
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb){
+        //? Check for the file name using regex
+        if (!file.originalname.match(/\.(doc|docx)$/)) {
+            //* Return a error in the callback
+            return cb(new Error('Please upload a Word document'))
+        }
+        //* Return true
+        cb(undefined, true)
+    }
 })
 
 //* Route for uploading using the multer middleware, here we set it to look for a single file named upload
