@@ -3,6 +3,7 @@ const multer = require('multer')
 const sharp = require('sharp')
 const User = require('../models/user')
 const auth = require('../middleware/auth')
+const {sendWelcomeEmail, sendCancelationEmail} = require('../emails/account')
 const router = express.Router()
 
 //! User Routes
@@ -11,6 +12,7 @@ router.post('/users/login', async (req, res) => {
     try {      
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
+    
         //* Send back the public profile data
         res.send({ user, token})
         
@@ -29,10 +31,13 @@ router.post('/users',async (req, res) => {
     try{
         //! If this await promise is fullfilled the response will be sent
         await user.save()
+        await sendWelcomeEmail(user.email, user.name)
         const token = await user.generateAuthToken()
         
         res.status(201).send({user, token})
     }catch (e){
+        console.log(e);
+        
         return res.status(400).send(e)
     }
     
@@ -120,6 +125,7 @@ router.delete('/users/me', auth,async (req, res) => {
         //     return res.status(404).send()
         // }
 
+        sendCancelationEmail(req.user.email, req.user.name)
         res.send(req.user)
 
     } catch (error) {

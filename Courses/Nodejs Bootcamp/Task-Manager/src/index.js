@@ -7,7 +7,7 @@ const taskRouter = require('./Routers/task')
 const auth = require('./middleware/auth')
 
 const app = express()
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT
 
 //! Parse JSON in a object
 app.use(express.json())
