@@ -26,5 +26,3 @@ doWork().then(value => {
 }).catch(error => {
     console.log('Error: ',error);  
 })
-
-
