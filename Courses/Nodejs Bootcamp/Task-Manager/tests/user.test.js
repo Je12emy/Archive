@@ -23,18 +23,39 @@ beforeEach(async () => {
 })
 
 test('Should sign up a new user', async () => {
-    await request(app).post('/users').send({
-        name: 'Jeremy Tester',
-        email: 'jeremyzelaya@hotmail.es',
-        password: 'myPass985041'
-    }).expect(201)
+    const response = await request(app)
+        .post('/users')
+        .send({
+            name: 'Jeremy Tester',
+            email: 'jeremyzelaya@hotmail.es',
+            password: 'myPass985041'
+        }).expect(201)
+    //* Assert the DB was changed
+    const user = await User.findById(response.body.user._id)  
+    expect(user).not.toBeNull()
+    //* Assertion about the response
+    //? Matches the expected object with a subset of keys for a desired object
+    expect(response.body).toMatchObject({
+        user: {
+            name: 'Jeremy Tester',
+            email: 'jeremyzelaya@hotmail.es'
+        },
+        token: user.tokens[0].token
+    })
+    //? Expect the password to not be plain text
+    expect(user.password).not.toBe('myPass985041')
 })
 
 test('Should Login existing user', async () => {
-    await request(app).post('/users/login').send({
+    const response = await request(app).post('/users/login').send({
         email: userOne.email,
         password: userOne.password
     }).expect(200)
+
+    //* Fetch the user from the db
+    const user = await User.findById(response.body.user._id)
+    expect(user).not.toBeNull()
+    expect(user.tokens[1].token).toBe(response.body.token)
 })
 
 test('Should NOT login in non existing user', async () => {
@@ -61,11 +82,13 @@ test('Should NOT fetch user profile for non authenticated user', async () => {
 })
 
 test('Should delete account for user', async () => {
-    await request(app)
+    const response = await request(app)
         .delete('/users/me')
         .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
         .send()
         .expect(200)
+    const user = await User.findById(response.body._id)
+    expect(user).toBeNull()
 })
 
 test('Should NOT delete account for non authenticated user', async () => {
