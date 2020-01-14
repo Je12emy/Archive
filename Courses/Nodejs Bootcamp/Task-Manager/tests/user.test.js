@@ -97,3 +97,43 @@ test('Should NOT delete account for non authenticated user', async () => {
         .send()
         .expect(401)
 })
+
+test('Should upload a new user avatar', async() => {
+    //? Make a post and attach the profile picture
+    await request(app)
+    .post('/users/me/avatar')
+    .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+    .attach('avatar','tests/fixtures/profile-pic.jpg')
+    .expect(200)
+
+    const user = await User.findById(userOne._id)
+    //? Checks if avatar is actually a buffer
+    //* toBe uses === which uses memory reference, toEqual checks for the content
+    //* with expect any we can compare the type
+
+    expect(user.avatar).toEqual(expect.any(Buffer))
+})
+
+test('Should update user fields', async () => {
+    await request(app)
+        .patch('/users/me')
+        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .send({
+            name: 'Jeremy Tester Updated'
+        })
+        .expect(200)
+
+    const user = await User.findById(userOneId)    
+    expect(user.name).toBe('Jeremy Tester Updated')
+})
+
+test('Should NOT update invalid users fields', async () => {
+    await request(app)
+        .patch('/users/me')
+        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .send({
+            location: 'Test Location'
+        })
+        .expect(400)
+
+})
