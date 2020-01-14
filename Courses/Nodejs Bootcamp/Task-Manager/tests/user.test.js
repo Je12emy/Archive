@@ -1,26 +1,9 @@
 const request = require('supertest')
 const app = require('../src/app')
 const User = require('../src/models/user')
-const jwt = require('jsonwebtoken')
-const mongoose = require('mongoose')
+const {userOneId, userOne, setDataBase} = require('./fixtures/db')
 
-const userOneId = new mongoose.Types.ObjectId()
-const userOne = {
-    _id: userOneId,
-    name: 'Mike',
-    email: 'mike@example.com',
-    password: '42what123',
-    tokens: [{
-        token: jwt.sign({_id: userOneId}, process.env.JWT_SECRET)
-    }]
-}
-
-beforeEach(async () => {
-    //? Whipe the user collection
-   await User.deleteMany()
-   //? Create a new User
-   await new User(userOne).save()
-})
+beforeEach(setDataBase)
 
 test('Should sign up a new user', async () => {
     const response = await request(app)
@@ -30,7 +13,7 @@ test('Should sign up a new user', async () => {
             email: 'jeremyzelaya@hotmail.es',
             password: 'myPass985041'
         }).expect(201)
-    //* Assert the DB was changed
+    //* Assert the DB was chansged
     const user = await User.findById(response.body.user._id)  
     expect(user).not.toBeNull()
     //* Assertion about the response
