@@ -15,10 +15,15 @@ app.use(express.static(localPublicPath))
 let count = 0
 
 io.on('connection', (socket) => {
+    //? Send all other users a message excluding this socket
     socket.broadcast.emit('message', 'New user has joined the chat')
     socket.on('sendMessage', message => {
         console.log(message);
         io.emit('message', message)
+    })
+    socket.on('sendLocation', ({latitude, longitude}) => {
+        
+        socket.broadcast.emit('sendLocation', `https://www.google.com/maps?q=${latitude},${longitude}` )
     })
 
     socket.on('disconnect', () => {
