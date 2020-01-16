@@ -12,10 +12,21 @@ const localPublicPath = path.join(__dirname, './src/public')
 
 app.use(express.static(localPublicPath))
 
-//? When a new connection is started by the client
-io.on('connection', () => {
+//* Counter
+let count = 0
+//? Access socket methods, and access the socket's methods
+io.on('connection', (socket) => {
     console.log('New web socket connection');
-    
+    //? Emmit a new event named countUpdated and pass in the counter
+    socket.emit('countUpdated', count)
+    //? Listen in the socket for the incrementCounter Event
+    socket.on('incrementCounter', () =>{
+        count++
+        console.log(count);
+        //? Emit the countUpdated event
+         //socket.emit('countUpdated', count)
+         io.emit('countUpdated', count)
+    })
 })
 
 app.get('/', (req, res) => {
