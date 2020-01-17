@@ -1,38 +1,23 @@
 const socket = io()
-//? When the countUpdated event is received log the mssg
-// socket.on('countUpdated', (count) => {
-//     console.log('Count has been updated', count);
-// })
-
-// const button = document.querySelector('#incrementButton')
-// button.addEventListener('click', () => {
-//     console.log('Click');
-//     //? Emit the incrementCounter event
-//     socket.emit('incrementCounter')
-    
-// })
 
 document.querySelector('#chatForm').addEventListener('submit', (e) => {
     e.preventDefault()
     let input = document.querySelector('#messageInput').value
     if (!input) {
-        return console.log('No message was provided');
-        
+        return console.log('No message was provided');   
     }
-    socket.emit('sendMessage', input)
-    console.log('Sent: ', input);
-    
+    socket.emit('sendMessage', input, (message) => {
+        console.log(message);
+    })
     input.value = ""
 })
+
 socket.on('message', (message) => {
-    console.log('Received: ',message);
+    //console.log('Received: ',message);
 })
 
-socket.on('sendLocation', (message) => {
-    console.log(message);
-    
+socket.on('sendLocation', (message) => {    
     console.log(`User has shared his location: ${message}`);
-    
 })
 
 document.querySelector('#shareLocationButton').addEventListener('click', e => {
@@ -41,7 +26,10 @@ document.querySelector('#shareLocationButton').addEventListener('click', e => {
     }
     const location = navigator.geolocation.getCurrentPosition( location => {
         const {latitude, longitude} = location.coords    
-        socket.emit('sendLocation', {latitude, longitude})
+        socket.emit('sendLocation', {latitude, longitude}, (message) => {
+            console.log(message);
+            
+        })
     })
 
 })
