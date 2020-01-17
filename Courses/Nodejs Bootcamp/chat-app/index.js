@@ -24,7 +24,7 @@ io.on('connection', (socket) => {
             return callback('Profanity is not allowed')
         }
 
-        io.emit('message', message)
+        socket.broadcast.emit('message', message)
         callback('Delivered')
     })
     socket.on('sendLocation', ({latitude, longitude}, callback) => {
