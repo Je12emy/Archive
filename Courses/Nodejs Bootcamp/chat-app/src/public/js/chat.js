@@ -1,9 +1,13 @@
 const socket = io()
-
+//* Elements
 const $messageForm = document.querySelector('#chatForm')
 const $messageInput = document.querySelector('#messageInput')
 const $shareLocation = document.querySelector('#shareLocationButton')
 const $submitButton = document.querySelector('#sendButton')
+const $message = document.querySelector('#messages')
+
+//* Templates
+const messageTemplate = document.querySelector('#messageTemplate').innerHTML
 
 $messageForm.addEventListener('submit', (e) => {
     //? Disable the send button
@@ -12,7 +16,7 @@ $messageForm.addEventListener('submit', (e) => {
     if (!$messageInput.value) {
         return console.log('No message was provided');   
     }
-    socket.emit('sendMessage', $messageInput.value, (message) => {
+    socket.emit('message', $messageInput.value, (message) => {
         $submitButton.removeAttribute('disabled')
         console.log(message);
     })
@@ -22,6 +26,10 @@ $messageForm.addEventListener('submit', (e) => {
 
 socket.on('message', (message) => {
     console.log('Received: ',message);
+    //? Render the html template and pass in a variable
+    const html = Mustache.render(messageTemplate, {message})
+    //? Render before the end of the element
+    $message.insertAdjacentHTML('beforeend', html)
 })
 
 socket.on('sendLocation', (message) => {    
@@ -44,5 +52,4 @@ $shareLocation.addEventListener('click', e => {
             
         })
     })
-
 })

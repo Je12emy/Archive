@@ -16,9 +16,10 @@ app.use(express.static(localPublicPath))
 let count = 0
 
 io.on('connection', (socket) => {
+    socket.emit('message', 'Welcome')
     //? Send all other users a message excluding this socket
     socket.broadcast.emit('message', 'New user has joined the chat')
-    socket.on('sendMessage', (message, callback) => {
+    socket.on('message', (message, callback) => {
         const filter = new Filter()
         if (filter.isProfane(message)) {
             return callback('Profanity is not allowed')
@@ -28,7 +29,7 @@ io.on('connection', (socket) => {
         callback('Delivered')
     })
     socket.on('sendLocation', ({latitude, longitude}, callback) => {
-        socket.broadcast.emit('sendLocation', `https://www.google.com/maps?q=${latitude},${longitude}` )
+        socket.broadcast.emit('message', `https://www.google.com/maps?q=${latitude},${longitude}` )
         callback('Location has been shared')
     })
 
