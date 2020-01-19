@@ -11,7 +11,7 @@ const server = http.createServer(app)
 const io = socketio(server)
 
 const PORT = process.env.PORT || 3000
-const localPublicPath = path.join(__dirname, './src/public')
+const localPublicPath = path.join(__dirname, './public')
 
 app.use(express.static(localPublicPath))
 
@@ -27,11 +27,11 @@ io.on('connection', (socket) => {
             return callback('Profanity is not allowed')
         }
 
-        socket.broadcast.emit('message', generateMessage(message))
+        io.emit('message', generateMessage(message))
         callback('Delivered')
     })
     socket.on('sendLocation', ({latitude, longitude}, callback) => {
-        socket.broadcast.emit('sendLocation', generateLocation(`https://www.google.com/maps?q=${latitude},${longitude}`) )
+        io.emit('sendLocation', generateLocation(`https://www.google.com/maps?q=${latitude},${longitude}`) )
         callback('Location has been shared')
     })
 

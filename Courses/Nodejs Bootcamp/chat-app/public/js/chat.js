@@ -1,14 +1,14 @@
 const socket = io()
 //* Elements
-const $messageForm = document.querySelector('#chatForm')
-const $messageInput = document.querySelector('#messageInput')
-const $shareLocation = document.querySelector('#shareLocationButton')
+const $messageForm = document.querySelector('#message-form')
+const $messageInput = document.querySelector('#message')
+const $shareLocation = document.querySelector('#send-location')
 const $submitButton = document.querySelector('#sendButton')
 const $message = document.querySelector('#messages')
 
 //* Templates
-const $messageTemplate = document.querySelector('#messageTemplate').innerHTML
-const $locationTemplate = document.querySelector('#locationTemplate').innerHTML
+const $messageTemplate = document.querySelector('#message-template').innerHTML
+const $locationTemplate = document.querySelector('#location-message-template').innerHTML
 
 $messageForm.addEventListener('submit', (e) => {
     //? Disable the send button
