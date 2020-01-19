@@ -30,6 +30,14 @@ io.on('connection', (socket) => {
         socket.emit('message', generateMessage('Server','Welcome'))
         //? Send all other users a message excluding this socket        
         socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined the chat!`))
+        
+        //? Create a new event and pass in the room and users in said room
+        io.to(user.room).emit('roomData', {
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        })
+
+        callback()
     })
     
     socket.on('message', (message, callback) => {
@@ -51,7 +59,11 @@ io.on('connection', (socket) => {
     socket.on('disconnect', (callback) => {
         const user = removeUser(socket.id)
         if (user) {
-            return io.to(user.room).emit('message', generateMessage('Server',`${user.username} has left the room`))
+            io.to(user.room).emit('message', generateMessage('Server',`${user.username} has left the room`))
+            io.to(user.room).emit('roomData', {
+                room:user.room,
+                users: getUsersInRoom(user.room)
+            })
         }
     })
 })

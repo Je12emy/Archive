@@ -1,4 +1,9 @@
 const socket = io()
+
+
+
+
+
 //* Elements
 const $messageForm = document.querySelector('#message-form')
 const $messageInput = document.querySelector('#message')
@@ -9,6 +14,7 @@ const $message = document.querySelector('#messages')
 //* Templates
 const $messageTemplate = document.querySelector('#message-template').innerHTML
 const $locationTemplate = document.querySelector('#location-message-template').innerHTML
+const $sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
 //* Options
 //? Parse que query string
@@ -43,6 +49,14 @@ socket.on('sendLocation', (message) => {
     //console.log(`User has shared his location: ${message}`);
     const html = Mustache.render($locationTemplate, {username ,url, createdAt: moment(createdAt).format('h:mm: a')})
     $message.insertAdjacentHTML('beforeend', html)
+})
+
+socket.on('roomData', ({room, users}) => {
+    const html = Mustache.render($sidebarTemplate,{
+        room,
+        users
+    })
+    document.querySelector('#sidebar').innerHTML = html
 })
 
 $shareLocation.addEventListener('click', e => {
