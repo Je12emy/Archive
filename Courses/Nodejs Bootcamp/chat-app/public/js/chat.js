@@ -1,9 +1,4 @@
 const socket = io()
-
-
-
-
-
 //* Elements
 const $messageForm = document.querySelector('#message-form')
 const $messageInput = document.querySelector('#message')
@@ -19,6 +14,29 @@ const $sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 //* Options
 //? Parse que query string
 const {username, room} = Qs.parse(location.search, {ignoreQueryPrefix: true})
+const autoscroll = () => {
+    //* New message element
+    const $newMessage = $message.lastElementChild
+
+    //* Height of the new message
+    const newMessageStyles = getComputedStyle($newMessage)
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom)
+    const newMessageHeight = $message.offsetHeight + newMessageMargin
+
+    //* Visible Height
+    const visibleHeight = $message.offsetHeight
+    
+    //* Height of messages container
+    const containerHeight = $message.scrollHeight
+    
+    //* How far have I scrolled
+    const scrollOffset = $message.scrollTop + visibleHeight
+
+    if (containerHeight - newMessageHeight <= scrollOffset) {
+        $message.scrollTop = $message.scrollHeight
+    }
+    
+}
 
 $messageForm.addEventListener('submit', (e) => {
     //? Disable the send button
@@ -42,6 +60,7 @@ socket.on('message', (message) => {
     const html = Mustache.render($messageTemplate, {username, text, createdAt: moment(createdAt).format('h:mm a')})
     //? Render before the end of the element
     $message.insertAdjacentHTML('beforeend', html)
+    autoscroll()
 })
 
 socket.on('sendLocation', (message) => {    
@@ -49,6 +68,7 @@ socket.on('sendLocation', (message) => {
     //console.log(`User has shared his location: ${message}`);
     const html = Mustache.render($locationTemplate, {username ,url, createdAt: moment(createdAt).format('h:mm: a')})
     $message.insertAdjacentHTML('beforeend', html)
+    autoscroll()
 })
 
 socket.on('roomData', ({room, users}) => {
