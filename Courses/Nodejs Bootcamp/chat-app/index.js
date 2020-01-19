@@ -15,12 +15,17 @@ const localPublicPath = path.join(__dirname, './public')
 
 app.use(express.static(localPublicPath))
 
-let count = 0
-
 io.on('connection', (socket) => {
-    socket.emit('message', generateMessage('Welcome'))
-    //? Send all other users a message excluding this socket
-    socket.broadcast.emit('message', generateMessage('New user has joined the chat'))
+    
+    socket.on('join', ({ username, room }) => {
+        //? Join a given communication socket
+        socket.join(room)
+        
+        socket.emit('message', generateMessage('Welcome'))
+        //? Send all other users a message excluding this socket
+        socket.broadcast.to(room).emit('message', generateMessage(`${username} has joined the chat!`))
+    })
+    
     socket.on('message', (message, callback) => {
         const filter = new Filter()
         if (filter.isProfane(message)) {
@@ -30,6 +35,7 @@ io.on('connection', (socket) => {
         io.emit('message', generateMessage(message))
         callback('Delivered')
     })
+
     socket.on('sendLocation', ({latitude, longitude}, callback) => {
         io.emit('sendLocation', generateLocation(`https://www.google.com/maps?q=${latitude},${longitude}`) )
         callback('Location has been shared')

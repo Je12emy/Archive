@@ -10,6 +10,10 @@ const $message = document.querySelector('#messages')
 const $messageTemplate = document.querySelector('#message-template').innerHTML
 const $locationTemplate = document.querySelector('#location-message-template').innerHTML
 
+//* Options
+//? Parse que query string
+const {username, room} = Qs.parse(location.search, {ignoreQueryPrefix: true})
+
 $messageForm.addEventListener('submit', (e) => {
     //? Disable the send button
     $submitButton.setAttribute('disabled', 'disabled')
@@ -58,3 +62,5 @@ $shareLocation.addEventListener('click', e => {
         })
     })
 })
+
+socket.emit('join', {username, room})
