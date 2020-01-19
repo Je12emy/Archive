@@ -7,7 +7,8 @@ const $submitButton = document.querySelector('#sendButton')
 const $message = document.querySelector('#messages')
 
 //* Templates
-const messageTemplate = document.querySelector('#messageTemplate').innerHTML
+const $messageTemplate = document.querySelector('#messageTemplate').innerHTML
+const $locationTemplate = document.querySelector('#locationTemplate').innerHTML
 
 $messageForm.addEventListener('submit', (e) => {
     //? Disable the send button
@@ -27,13 +28,15 @@ $messageForm.addEventListener('submit', (e) => {
 socket.on('message', (message) => {
     console.log('Received: ',message);
     //? Render the html template and pass in a variable
-    const html = Mustache.render(messageTemplate, {message})
+    const html = Mustache.render($messageTemplate, {message})
     //? Render before the end of the element
     $message.insertAdjacentHTML('beforeend', html)
 })
 
-socket.on('sendLocation', (message) => {    
-    console.log(`User has shared his location: ${message}`);
+socket.on('sendLocation', (url) => {    
+    //console.log(`User has shared his location: ${message}`);
+    const html = Mustache.render($locationTemplate, {url})
+    $message.insertAdjacentHTML('beforeend', html)
 })
 
 $shareLocation.addEventListener('click', e => {
