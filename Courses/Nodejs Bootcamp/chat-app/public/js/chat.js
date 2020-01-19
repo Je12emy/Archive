@@ -31,17 +31,17 @@ $messageForm.addEventListener('submit', (e) => {
 
 socket.on('message', (message) => {
     console.log('Received: ',message.text);
-    const {text, createdAt} = message
+    const {username, text, createdAt} = message
     //? Render the html template and pass in a variable
-    const html = Mustache.render($messageTemplate, {text, createdAt: moment(createdAt).format('h:mm a')})
+    const html = Mustache.render($messageTemplate, {username, text, createdAt: moment(createdAt).format('h:mm a')})
     //? Render before the end of the element
     $message.insertAdjacentHTML('beforeend', html)
 })
 
-socket.on('sendLocation', (location) => {    
-    const {url, createdAt} = location
+socket.on('sendLocation', (message) => {    
+    const {username, url, createdAt} = message
     //console.log(`User has shared his location: ${message}`);
-    const html = Mustache.render($locationTemplate, {url, createdAt: moment(createdAt).format('h:mm: a')})
+    const html = Mustache.render($locationTemplate, {username ,url, createdAt: moment(createdAt).format('h:mm: a')})
     $message.insertAdjacentHTML('beforeend', html)
 })
 
@@ -63,4 +63,9 @@ $shareLocation.addEventListener('click', e => {
     })
 })
 
-socket.emit('join', {username, room})
+socket.emit('join', {username, room}, (error) => {
+    if(error){
+        alert(`There was an error: ${error}`)
+        location.href= '/'
+    }
+})
