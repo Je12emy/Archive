@@ -1,0 +1,28 @@
+* {
+  margin:0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.App{
+  text-align: center;
+  margin: 50px;
+}
+
+.App h1 {
+  font-size: 24px;
+}
+
+.App input[type=text]{
+  padding: 0px 50px 0px 50px;
+}
+
+.charBox{
+  margin: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.char {
+  font-size: 24px;
+}
