@@ -1,0 +1,40 @@
+Arguments: 
+  /snap/node/2644/bin/node /snap/node/2644/bin/yarn.js config get registry
+
+PATH: 
+  /home/je12emy/Documents/programming/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+Yarn version: 
+  1.22.4
+
+Node version: 
+  12.16.2
+
+Platform: 
+  linux x64
+
+Trace: 
+  Error: ../../package.json: EACCES: permission denied, write
+      at writeSync (fs.js:599:3)
+      at SyncWriteStream._write (internal/fs/sync_write_stream.js:24:3)
+      at doWrite (_stream_writable.js:442:12)
+      at writeOrBuffer (_stream_writable.js:426:5)
+      at SyncWriteStream.Writable.write (_stream_writable.js:317:11)
+      at ConsoleReporter.warn (/snap/node/2644/lib/cli.js:96791:17)
+      at warn (/snap/node/2644/lib/cli.js:51520:23)
+      at module.exports.exports.default (/snap/node/2644/lib/cli.js:37358:7)
+      at /snap/node/2644/lib/cli.js:51531:51
+      at Generator.next (<anonymous>)
+
+npm manifest: 
+  {
+    "name": "03-lists-practice",
+    "version": "0.1.0",
+    "private": true
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
